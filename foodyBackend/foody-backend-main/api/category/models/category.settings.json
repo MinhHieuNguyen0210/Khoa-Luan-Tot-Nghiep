@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "categories",
+  "info": {
+    "name": "category"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
+    },
+    "products": {
+      "via": "categories",
+      "collection": "product",
+      "dominant": true
+    },
+    "isDeleted": {
+      "type": "boolean",
+      "default": false
+    },
+    "image": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

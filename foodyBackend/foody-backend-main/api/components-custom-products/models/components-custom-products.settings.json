@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "components_custom_products",
+  "info": {
+    "name": "ComponentsCustomProducts",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "productID": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "integer"
+    }
+  }
+}
