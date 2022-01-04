@@ -1,0 +1,5 @@
+user : huyhuynh@gmail.com
+pass: theohenry1214
+
+admin : minhhieu@gmail.com
+pass : minhhieu123
