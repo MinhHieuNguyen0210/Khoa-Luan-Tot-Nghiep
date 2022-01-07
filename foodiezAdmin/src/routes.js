@@ -15,6 +15,8 @@ import Order from './pages/Order';
 import UserAdd from './components/_dashboard/user/UserAdd';
 import Revenue from './pages/Revenue';
 import Account from './pages/Account';
+import Feedback from './pages/Feedback';
+import Voucher from './pages/Voucher';
 
 // ----------------------------------------------------------------------
 
@@ -33,7 +35,9 @@ export default function Router() {
         { path: 'blog', element: <Blog /> },
         { path: 'addFood', element: <UserAdd /> },
         // { path: 'revenue', element: <Revenue /> },
-        { path: 'account', element: <Account /> }
+        { path: 'account', element: <Account /> },
+        { path: 'feedback', element: <Feedback /> },
+        { path: 'voucher', element: <Voucher /> }
       ]
     },
     {

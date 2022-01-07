@@ -35,6 +35,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Cookies from 'js-cookie';
 import { filter } from 'lodash';
 import Image from 'material-ui-image';
@@ -366,6 +367,21 @@ function Products() {
         }
       });
   };
+  const handleClickNotify = (prodName) => {
+    console.log(prodName);
+    const obj = {};
+    obj.productName = prodName;
+    productApi
+      .notify(obj, token)
+      .then((res) => {
+        console.log('success!');
+      })
+      .catch((err) => {
+        if (err.response) {
+          console.log('failed');
+        }
+      });
+  };
   return (
     <>
       <Page title="Foody | Admin">
@@ -621,6 +637,14 @@ function Products() {
                               >
                                 <AddIcon />
                               </IconButton>
+                              <Button
+                                variant="contained"
+                                size="small"
+                                startIcon={<NotificationsActiveIcon />}
+                                color="warning"
+                                onClick={() => handleClickNotify(name)}
+                                style={{ paddingRight: '5px' }}
+                              />
                             </TableCell>
                           </TableRow>
                         );

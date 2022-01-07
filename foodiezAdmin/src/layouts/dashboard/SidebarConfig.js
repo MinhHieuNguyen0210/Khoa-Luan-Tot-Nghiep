@@ -7,6 +7,10 @@ import lockFill from '@iconify/icons-eva/lock-fill';
 import personAddFill from '@iconify/icons-eva/person-add-fill';
 import alertTriangleFill from '@iconify/icons-eva/alert-triangle-fill';
 import cubeFill from '@iconify/icons-eva/cube-fill';
+import messageSquareOutline from '@iconify/icons-eva/message-square-outline';
+import shoppingCartOutline from '@iconify/icons-eva/shopping-cart-outline';
+import layersOutline from '@iconify/icons-eva/layers-outline';
+import percentOutline from '@iconify/icons-eva/percent-outline';
 
 // ----------------------------------------------------------------------
 
@@ -31,13 +35,24 @@ const sidebarConfig = [
   {
     title: 'Categories',
     path: '/dashboard/categories',
-    icon: getIcon(cubeFill)
+    icon: getIcon(layersOutline)
   },
   {
     title: 'Order',
     path: '/dashboard/order',
-    icon: getIcon(cubeFill)
+    icon: getIcon(shoppingCartOutline)
+  },
+  {
+    title: 'Feedback',
+    path: '/dashboard/feedback',
+    icon: getIcon(messageSquareOutline)
+  },
+  {
+    title: 'Voucher',
+    path: '/dashboard/voucher',
+    icon: getIcon(percentOutline)
   }
+
   // {
   //   title: 'Revenue',
   //   path: '/dashboard/revenue',

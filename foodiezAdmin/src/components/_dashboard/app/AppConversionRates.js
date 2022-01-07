@@ -1,3 +1,4 @@
+import { useEffect, useState, useRef } from 'react';
 import { merge } from 'lodash';
 import ReactApexChart from 'react-apexcharts';
 // material
@@ -9,20 +10,41 @@ import { BaseOptionChart } from '../../charts';
 
 // ----------------------------------------------------------------------
 
-const CHART_DATA = [{ name: 'quanity', data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200] }];
-const categoriesData = [
-  'Cà phê đá xay',
-  'Bông lan trứng muối',
-  'Caramel Machiato',
-  'Cơm',
-  'Bún',
-  'Phở',
-  'Cold Brew',
-  'Truyền thống',
-  'Phúc bồn tử'
-];
-
 export default function AppConversionRates() {
+  const [productNames, setProductNames] = useState([]);
+  const [chartData, setChartData] = useState([]);
+  useEffect(() => {
+    async function fetchProductList() {
+      const requestUrl = 'https://foody-store-server.herokuapp.com/products?isDeleted=false';
+      const response = await fetch(requestUrl);
+      const responseJSON = await response.json();
+      console.log({
+        responseJSON
+      });
+      const data = responseJSON;
+      const resObj = data.map((item) =>
+        // eslint-disable-next-line no-lone-blocks
+        ({
+          // eslint-disable-next-line prettier/prettier
+          name: item.name,
+          quantity: item.quantity
+        })
+      );
+      const chartData = [];
+      const productNames = [];
+      resObj.forEach((item) => {
+        chartData.push(item.quantity);
+        productNames.push(item.name);
+      });
+      setChartData(chartData);
+      setProductNames(productNames);
+      console.log(resObj);
+    }
+    fetchProductList();
+  }, []);
+
+  const CHART_DATA = [{ name: 'quanity', data: chartData }];
+  const categoriesData = productNames;
   const chartOptions = merge(BaseOptionChart(), {
     tooltip: {
       marker: { show: false },
@@ -34,7 +56,7 @@ export default function AppConversionRates() {
       }
     },
     plotOptions: {
-      bar: { horizontal: true, barHeight: '40%', borderRadius: 2 }
+      bar: { horizontal: true, barHeight: '40%', borderRadius: 1 }
     },
     xaxis: {
       categories: categoriesData
@@ -43,9 +65,9 @@ export default function AppConversionRates() {
 
   return (
     <Card>
-      <CardHeader title="Product Statictics Sold" subheader="Unit" />
+      <CardHeader title="Product Quantity Statictics " subheader="" />
       <Box sx={{ mx: 3 }} dir="ltr">
-        <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} height={400} />
+        <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} height={600} />
       </Box>
     </Card>
   );

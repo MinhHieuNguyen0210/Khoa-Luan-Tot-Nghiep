@@ -32,6 +32,14 @@ const productApi = {
         Authorization: `Bearer ${token}`
       }
     });
+  },
+  notify(data, token) {
+    const url = '/products/notify';
+    return axiosClient.post(url, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 };
 
