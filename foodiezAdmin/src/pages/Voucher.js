@@ -267,7 +267,6 @@ function Voucher(props) {
               <VoucherAdd handleUpdateListVoucher={handleUpdateListVoucher} />
             </Modal>
           </Stack>
-
           <Card>
             {/* <UserListToolbar
               numSelected={selected.length}
@@ -309,6 +308,12 @@ function Voucher(props) {
                         } = row;
                         const date = formatIsoStringToDate(published_at);
                         const isItemSelected = selected.indexOf(_id) !== -1;
+                        const promote = promotionAmount
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        const apply = applyForOrderValue
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                         return (
                           <TableRow
                             hover
@@ -347,13 +352,13 @@ function Voucher(props) {
                             </TableCell>
                             <TableCell align="left">
                               <Typography variant="subtitle2" noWrap>
-                                {promotionAmount}
+                                {promote}
                                 <span style={{ color: 'orange' }}> VND</span>
                               </Typography>
                             </TableCell>
                             <TableCell align="left">
                               <Typography variant="subtitle2" noWrap>
-                                {applyForOrderValue}
+                                {apply}
                                 <span style={{ color: 'orange' }}> VND</span>
                               </Typography>
                             </TableCell>

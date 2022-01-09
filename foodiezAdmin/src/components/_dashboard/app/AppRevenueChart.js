@@ -21,8 +21,8 @@ function AppRevenueChart() {
   const [chartData, setChartData] = useState([]);
   const [value, onChange] = useState([new Date(), new Date()]);
   const [filterDate, setFilterDate] = useState({
-    from: 1635206400000, // 26/10/2021
-    to: 1635638400000 // 31/10/2021
+    from: 1641772800000, // 10/01/2021
+    to: 1642204800000 // 15/01/2021
   });
   const token = Cookies.get('tokenUser');
   console.log(value[0], value[1]);
@@ -54,6 +54,10 @@ function AppRevenueChart() {
     return object;
   };
 
+  // const newChart = chartData.map((x) => {
+  //   const revenue = x.revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  //   return revenue;
+  // });
   const newChart = chartData.map((x) => x.revenue);
   const newDate = chartData.map((x) => formatIsoStringToDate(x.day));
 

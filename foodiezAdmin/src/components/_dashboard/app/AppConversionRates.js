@@ -67,7 +67,7 @@ export default function AppConversionRates() {
     <Card>
       <CardHeader title="Product Quantity Statictics " subheader="" />
       <Box sx={{ mx: 3 }} dir="ltr">
-        <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} height={600} />
+        <ReactApexChart type="bar" series={CHART_DATA} options={chartOptions} height={800} />
       </Box>
     </Card>
   );

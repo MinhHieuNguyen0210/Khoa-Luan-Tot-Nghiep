@@ -509,14 +509,15 @@ function Products() {
                           name,
                           description,
                           status,
-                          price,
                           createdAt,
+                          price,
                           quantity,
                           image
                         } = row;
                         const { name: categoriesName, _id: idCate } = row.categories[0];
                         const isItemSelected = selected.indexOf(name) !== -1;
                         const date = formatIsoStringToDate(createdAt);
+                        const priceFixed = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                         return (
                           <TableRow
                             hover
@@ -562,7 +563,7 @@ function Products() {
                                 }}
                                 variant="body1"
                               >
-                                {price}{' '}
+                                {priceFixed}{' '}
                                 <span
                                   style={{
                                     color: 'orange'

@@ -149,7 +149,7 @@ const SuccessOff = (props, route) => {
                         <Text style={{...FONTS.h3, color:"black "}}>Total</Text>
                         <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:15}}>
                             <Text style={{...FONTS.h4, color:COLORS.darkgray}}>Total</Text>
-                            <Text style={{...FONTS.h4, color:COLORS.darkgray}}>{`${formatCurrency(props.totalprice)}`}đ</Text>
+                            <Text style={{...FONTS.h4, color:COLORS.darkgray}}>{`${formatCurrency(props.route.params.price)}`}đ</Text>
                         </View>
                     </View> 
                     {/* đường line chia cắt */}
@@ -163,7 +163,7 @@ const SuccessOff = (props, route) => {
                     {/* đường line chia cắt */}
                     <View style={{flexDirection:'row', justifyContent:'space-between', marginHorizontal:width*0.05}}>
                             <Text style={{...FONTS.h4, color:COLORS.darkgray}}>Payment amount</Text>
-                            <Text style={{...FONTS.h4, color:COLORS.darkgray}}>{`${formatCurrency(props.totalprice)}`}đ</Text>
+                            <Text style={{...FONTS.h4, color:COLORS.darkgray}}>{`${formatCurrency(props.route.params.price)}`}đ</Text>
                     </View>
                 </ScrollView>
                     

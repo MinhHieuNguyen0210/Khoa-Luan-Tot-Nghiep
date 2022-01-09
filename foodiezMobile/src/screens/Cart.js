@@ -10,6 +10,7 @@ import {
     Image,
     NativeModules,
     ScrollView,
+    Alert, 
 } from "react-native";
 import { Button, Icon, ListItem, Tab } from "native-base";
 import tabs from "../navigation/tabs";
@@ -176,6 +177,8 @@ const Cart = (props) => {
     };
     const saveCartPro = () => {
         let userToken;
+        Alert.alert("Alert Title",
+        "Successfully save the cart !", [{text:"OK", onPress: () => console.log("OK Pressed")}])
         async function updatecart() {
             userToken = await AsyncStorage.getItem("userToken");
             setUsertoken(userToken);

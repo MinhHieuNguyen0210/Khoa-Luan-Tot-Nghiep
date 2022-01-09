@@ -25,7 +25,7 @@ const Paypal = (props) => {
     const navigation = useNavigation();
     const [showModal, setShowModal] = useState(false);
    
-    const posttotal = (props.totalprice*0.00004356823).toFixed(2);
+    const posttotal = (props.route.params.price*0.00004356823).toFixed(2);
     
     const showSuccess = () => {
         props.delallProduct();

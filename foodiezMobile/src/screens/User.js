@@ -77,8 +77,12 @@ const User = ( props ) => {
               </View>
             </View>
           </View>
-        );
-       
+        );  
+    }
+    
+    const updateProfile = () => {
+        Alert.alert("Alert Title",
+        "Information has been successfully updated !", [{text:"OK", onPress: () => console.log("OK Pressed")}])
     }
     function renderHeader() {
         return (
@@ -268,8 +272,9 @@ const User = ( props ) => {
                             </ScrollView>
 
                             <Button 
-                            // onPress={updateProfile} 
-                            title="Cập nhật" color="#4a5d54" 
+                                
+                                onPress={updateProfile} 
+                                title="Update" color="#4a5d54" 
                             />
                         </View>
                     </View>

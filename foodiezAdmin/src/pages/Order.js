@@ -213,7 +213,8 @@ export default function User() {
   const handleClickConfirm = async (id) => {
     console.log(id);
     const body = {
-      status: 'SUCCESS'
+      status: 'SUCCESS',
+      isPaid: true
     };
     await orderApi
       .update(token, id, body)

@@ -11,8 +11,10 @@ import {
     NativeModules,
     TextInput,
     ScrollView,
+    Alert,
 } from "react-native";
 import { Icon, List, ListItem } from "native-base";
+import { Avatar, Card, Input, Overlay } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { icons, images, SIZES, COLORS, FONTS } from "../constants";
 import { useNavigation } from "@react-navigation/native";
@@ -25,6 +27,10 @@ const Payment01 = (props) => {
     const [valuePhoneNumber, setValuePhoneNumber] = useState("");
     const [valueFullName, setValueFullName] = useState("");
     const [valuePaymentType, setValuePaymentType] = useState("");
+    const [couponList, setCouponList] = useState([]);
+    const [price, setprice] = useState(props.totalprice);
+    const [fakeprice, setfakeprice] = useState(0);
+    const [couponcodeID, setcouponcodeID] = useState('');
 
     const navigation = useNavigation();
     const formatCurrency = (monney) => {
@@ -37,36 +43,37 @@ const Payment01 = (props) => {
             });
     };
     const checkValue = () => {
-        if (valueAddress && valuePhoneNumber && valueFullName)
-            return true ;
-        else 
-            return false ;
-    }
+        if (valueAddress && valuePhoneNumber && valueFullName) return true;
+        else return false;
+    };
     // console.log(">>checkValue",checkValue())
     const handleContinue = () => {
         const paymentTypeApi = "ONLINE";
         setValuePaymentType(paymentTypeApi);
         postApiOrder(props.cart, paymentTypeApi);
-        navigation.navigate("Paypal");
+        navigation.navigate("Paypal", {
+            price:price
+        });
     };
- 
+
     const handleContinueOffline = () => {
         const paymentTypeApi01 = "DIRECT";
         setValuePaymentType(paymentTypeApi01);
         postApiOrder(props.cart, paymentTypeApi01);
-        navigation.navigate("SuccessOff",  {
+        navigation.navigate("SuccessOff", {
             valueAddress: valueAddress,
             valuePhoneNumber: valuePhoneNumber,
             valueFullName: valueFullName,
+            price:price
         });
     };
-    // console.log(">>paymentType1",valuePaymentType)
 
-    const postApiOrder = (
-        cart,
-        paymentType1
-    ) => {
-        
+    useEffect(() => {
+        getListCode();
+        return () => {};
+    }, []);
+
+    const postApiOrder = (cart, paymentType1) => {
         let userToken;
         let prolistorder = props.cart;
         // console.log(">>cart", props.cart);
@@ -74,7 +81,7 @@ const Payment01 = (props) => {
         prolistorder.map((pro) => {
             delete pro.id;
         });
-        
+
         userToken = AsyncStorage.getItem("userToken").then((res) => {
             const apiURL = "https://foody-store-server.herokuapp.com/orders";
             fetch(apiURL, {
@@ -90,7 +97,7 @@ const Payment01 = (props) => {
                     products: prolistorder,
                     totalAmount: props.totalprice,
                     status: "PENDING",
-                    paymentType:paymentType1
+                    paymentType: paymentType1,
                 }),
             })
                 .then((response) => response.json())
@@ -103,6 +110,45 @@ const Payment01 = (props) => {
         });
     };
 
+    const getListCode = () => {
+        const apiURL = "https://foody-store-server.herokuapp.com/vouchers";
+        fetch(apiURL)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                // console.log("listcode>>", responseJson.name);
+                setCouponList(responseJson);
+            })
+            .catch((error) => console.log(error));
+    };
+
+    const addCode = (code) => { 
+        console.log("applyForOrderVaule>>",code.applyForOrderVaule);
+        console.log("tong tien>>", props.totalprice);
+        
+        setcouponcodeID(code.id)
+        if(props.totalprice >= code.applyForOrderValue){
+            console.log("thanh toan dc")
+            const priceAfter = props.totalprice - code.promotionAmount;
+            console.log("gia cuoi cung>>>", priceAfter);
+            return (setprice(priceAfter))
+        }
+        else{
+            console.log("khong thanh toan dc");
+            Alert.alert(
+                "Alert Title",
+                "Vocher khong ap dung duoc cho hoa don nay",
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                  },
+                  { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+              );
+        }
+        
+    }
     function renderHeader() {
         return (
             <View
@@ -168,10 +214,10 @@ const Payment01 = (props) => {
             <View
                 style={[
                     styles.rowFront,
-                    { height: 50, backgroundColor: COLORS.lightGray2 },
+                    { height: 25, backgroundColor: COLORS.lightGray2 },
                 ]}
             >
-                <Text style={{ ...FONTS.h3, fontStyle: "italic" }}>
+                <Text style={{ ...FONTS.h4, fontStyle: "italic" }}>
                     Types of products : {props.cart.length}{" "}
                 </Text>
             </View>
@@ -204,12 +250,12 @@ const Payment01 = (props) => {
                         styles.rowFront,
                         {
                             justifyContent: "space-evenly",
-                            height: 250,
+                            height: 180,
                             backgroundColor: COLORS.lightGray2,
                         },
                     ]}
                 >
-                    <Text style={{ ...FONTS.h3 }}>DELIVERY TO</Text>
+                    <Text style={{ ...FONTS.h4 }}>DELIVERY TO</Text>
                     <TextInput
                         placeholder="Full name"
                         value={valueFullName}
@@ -217,6 +263,7 @@ const Payment01 = (props) => {
                             setValueFullName(val);
                         }}
                         style={{
+                            height: 35,
                             borderWidth: 0.5,
                             borderRadius: 5,
                             paddingVertical: 7,
@@ -231,6 +278,7 @@ const Payment01 = (props) => {
                         }}
                         keyboardType={"phone-pad"}
                         style={{
+                            height: 35,
                             borderWidth: 0.5,
                             borderRadius: 5,
                             paddingVertical: 7,
@@ -244,6 +292,7 @@ const Payment01 = (props) => {
                             setValueAddress(val);
                         }}
                         style={{
+                            height: 35,
                             borderWidth: 0.5,
                             borderRadius: 5,
                             paddingVertical: 7,
@@ -251,10 +300,169 @@ const Payment01 = (props) => {
                         }}
                     />
                 </View>
+                {/* mã giảm giá */}
+                <View>
+                    <Card>
+                        <Card.Title
+                            style={{
+                                width: "100%",
+                                textAlign: "left",
+                            }}
+                        >
+                            <View
+                                style={{
+                                    width: 300,
+                                    height: 20,
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: 17,
+                                        color: "grey",
+                                        fontStyle: "italic",
+                                    }}
+                                >
+                                    Discount code
+                                </Text>
+                            </View>
+                        </Card.Title>
+                        <Card.Divider />
+                        <ScrollView
+                            style={{ backgroundColor: "white", height: 75 }}
+                            horizontal={true}
+                        >
+                            {couponList.map((coupon) => (
+                                <View
+                                    style={{
+                                        height: 70,
+                                        width: 270,
+
+                                        borderRadius: 5,
+
+                                        flexDirection: "row",
+                                        marginRight: 15,
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            width: "75%",
+                                            backgroundColor: "#e79b4e",
+                                            borderBottomRightRadius: 10,
+                                            borderTopRightRadius: 10,
+                                            paddingLeft: 10,
+                                            shadowColor: "#000",
+                                            shadowOffset: {
+                                                width: 0,
+                                                height: 2,
+                                            },
+                                            shadowOpacity: 0.25,
+                                            shadowRadius: 3.84,
+
+                                            elevation: 5,
+                                        }}
+                                    >
+                                        <View
+                                            style={{
+                                                width: "100%",
+                                                backgroundColor: "white",
+                                                height: 70,
+
+                                                borderBottomRightRadius: 10,
+                                                borderTopRightRadius: 10,
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    paddingLeft: 10,
+                                                    paddingTop: 5,
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        fontSize: 12,
+                                                        color: "grey",
+                                                        textTransform:
+                                                            "uppercase",
+                                                    }}
+                                                >
+                                                    {coupon.name}
+                                                </Text>
+                                                <Text
+                                                    style={{
+                                                        fontWeight: "bold",
+                                                        paddingTop: 3,
+                                                    }}
+                                                >
+                                                    {coupon.description}
+                                                </Text>
+                                                <Text
+                                                    style={{
+                                                        fontSize: 12,
+                                                        color: "grey",
+                                                        paddingTop: 5,
+                                                    }}
+                                                >
+                                                    {coupon.published_at}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+
+                                    <View
+                                        style={{
+                                            height: 70,
+                                            width: "25%",
+                                            backgroundColor: "white",
+                                            borderBottomRightRadius: 5,
+                                            borderTopRightRadius: 5,
+                                            borderBottomLeftRadius: 10,
+                                            borderTopLeftRadius: 10,
+                                            shadowColor: "#000",
+                                            shadowOffset: {
+                                                width: 0,
+                                                height: 2,
+                                            },
+                                            shadowOpacity: 0.25,
+                                            shadowRadius: 3.84,
+
+                                            elevation: 5,
+
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            onPress={() => addCode(coupon)}
+                                        >
+                                            <View>
+                                                <Text
+                                                    style={{
+                                                        color: "#ffb460",
+                                                        fontWeight: "bold",
+                                                    }}
+                                                >
+                                                    chon
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            ))}
+                        </ScrollView>
+                    </Card>
+                </View>
+
                 <View
                     style={[
                         styles.rowFront,
-                        { justifyContent: "space-evenly", height: 75 },
+                        {
+                            justifyContent: "space-evenly",
+                            height: 50,
+                            marginVertical: 10,
+                        },
                     ]}
                 >
                     <View
@@ -268,9 +476,9 @@ const Payment01 = (props) => {
                             backgroundColor: COLORS.lightGray2,
                         }}
                     >
-                        <Text style={{ ...FONTS.h2 }}>Total</Text>
-                        <Text style={{ ...FONTS.h2 }}>
-                            {`${formatCurrency(props.totalprice)}`}đ
+                        <Text style={{ ...FONTS.h4 }}>Total</Text>
+                        <Text style={{ ...FONTS.h4 }}>
+                            {`${formatCurrency(price)}`}đ
                         </Text>
                     </View>
                 </View>
@@ -283,72 +491,86 @@ const Payment01 = (props) => {
                 style={[
                     styles.rowFront,
                     {
-                        height: 60,
+                        height: 45,
                         backgroundColor: "#ffe4e1",
                         flexDirection: "row",
                         justifyContent: "space-between",
                     },
                 ]}
             >
-                {checkValue()?<TouchableOpacity
-                    onPress={() => handleContinue()}
-                    style={{
-                        // marginHorizontal: width * 0.15,
-                        width: 150,
-                        height: 40,
-                        backgroundColor: COLORS.primary,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        borderWidth: 0.5,
-                        borderRadius: 20,
-                    }}
-                >
-                    <Text style={{ color: "white", ...FONTS.h4 }}>Online Payment</Text>
-                </TouchableOpacity>:<View
-                    
-                    style={{
-                        // marginHorizontal: width * 0.15,
-                        width: 150,
-                        height: 40,
-                        backgroundColor: "#c0c0c0",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        borderWidth: 0.5,
-                        borderRadius: 20,
-                    }}
-                >
-                    <Text style={{ color: "white", ...FONTS.h4 }}>Online Payment</Text>
-                </View>}
-                {checkValue()?<TouchableOpacity
-                    onPress={() =>handleContinueOffline()}
-                    style={{
-                        // marginHorizontal: width * 0.15,
-                        width: 150,
-                        height: 40,
-                        backgroundColor: COLORS.primary,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        borderWidth: 0.5,
-                        borderRadius: 20,
-                    }}
-                >
-                    <Text style={{ color: "white", ...FONTS.h4 }}>Direct Payment</Text>
-                </TouchableOpacity>:
-                <View
-                // onPress={() =>handleContinueOffline()}
-                style={{
-                    // marginHorizontal: width * 0.15,
-                    width: 150,
-                    height: 40,
-                    backgroundColor: "#c0c0c0",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderWidth: 0.5,
-                    borderRadius: 20,
-                }}
-                >
-                <Text style={{ color: "white", ...FONTS.h4 }}>Direct Payment</Text>
-                </View>}
+                {checkValue() ? (
+                    <TouchableOpacity
+                        onPress={() => handleContinue()}
+                        style={{
+                            // marginHorizontal: width * 0.15,
+                            width: 150,
+                            height: 40,
+                            backgroundColor: COLORS.primary,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderWidth: 0.5,
+                            borderRadius: 20,
+                        }}
+                    >
+                        <Text style={{ color: "white", ...FONTS.h4 }}>
+                            Online Payment
+                        </Text>
+                    </TouchableOpacity>
+                ) : (
+                    <View
+                        style={{
+                            // marginHorizontal: width * 0.15,
+                            width: 150,
+                            height: 40,
+                            backgroundColor: "#c0c0c0",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderWidth: 0.5,
+                            borderRadius: 20,
+                        }}
+                    >
+                        <Text style={{ color: "white", ...FONTS.h4 }}>
+                            Online Payment
+                        </Text>
+                    </View>
+                )}
+                {checkValue() ? (
+                    <TouchableOpacity
+                        onPress={() => handleContinueOffline()}
+                        style={{
+                            // marginHorizontal: width * 0.15,
+                            width: 150,
+                            height: 40,
+                            backgroundColor: COLORS.primary,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderWidth: 0.5,
+                            borderRadius: 20,
+                        }}
+                    >
+                        <Text style={{ color: "white", ...FONTS.h4 }}>
+                            Direct Payment
+                        </Text>
+                    </TouchableOpacity>
+                ) : (
+                    <View
+                        // onPress={() =>handleContinueOffline()}
+                        style={{
+                            // marginHorizontal: width * 0.15,
+                            width: 150,
+                            height: 40,
+                            backgroundColor: "#c0c0c0",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderWidth: 0.5,
+                            borderRadius: 20,
+                        }}
+                    >
+                        <Text style={{ color: "white", ...FONTS.h4 }}>
+                            Direct Payment
+                        </Text>
+                    </View>
+                )}
             </View>
         );
     }
@@ -376,14 +598,14 @@ const styles = StyleSheet.create({
     rowFront: {
         backgroundColor: "#FFF",
         borderRadius: 5,
-        height: 220,
+        // height: 220,
         margin: 3,
-        marginBottom: 10,
-        paddingHorizontal: 10,
-        paddingVertical: 15,
+        // marginBottom: 10,
+        paddingHorizontal: 5,
+        // paddingVertical: 5,
         // justifyContent: "space-around",
         shadowColor: "#999",
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.8,
         shadowRadius: 2,
         elevation: 5,

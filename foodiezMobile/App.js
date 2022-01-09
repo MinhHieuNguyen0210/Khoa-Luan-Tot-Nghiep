@@ -9,10 +9,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Restaurant, 
          Cart,
          Payment01,
-         Payment02,
          Paypal,
          User,
-         EditProfile, 
+         
          Search,
          OrderHistory,
          OrderDetail,
@@ -143,10 +142,8 @@ const App = () => {
                         <Stack.Screen name="Restaurant" component={Restaurant} />
                         <Stack.Screen name="Cart" component={Cart} />
                         <Stack.Screen name="Payment01" component={Payment01} />
-                        <Stack.Screen name="Payment02" component={Payment02} />
                         <Stack.Screen name="Paypal" component={Paypal} />
                         <Stack.Screen name="User" component={User} />
-                        <Stack.Screen name="EditProfile" component={EditProfile}/>
                         <Stack.Screen name="Search" component={Search}/>
                         <Stack.Screen name="OrderHistory" component={OrderHistory}/>
                         <Stack.Screen name="OrderDetail" component={OrderDetail}/>
