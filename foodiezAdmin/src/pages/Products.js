@@ -162,9 +162,18 @@ function Products() {
   const [productAction, setProductAction] = useState(false);
   const [isvisible, SetVisible] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openNotiSuccess, setOpenNotiSuccess] = useState(false);
+  const [openNotiFailed, setOpenNotiFailed] = useState(false);
   const refIsDelete = useRef(false);
   const [value, setValue] = useState('');
   const token = Cookies.get('tokenUser');
+
+  const handleCloseNotiSuccess = () => {
+    setOpenNotiSuccess(false);
+  };
+  const handleCloseNotiFailed = () => {
+    setOpenNotiFailed(false);
+  };
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
@@ -375,10 +384,12 @@ function Products() {
       .notify(obj, token)
       .then((res) => {
         console.log('success!');
+        setOpenNotiSuccess(true);
       })
       .catch((err) => {
         if (err.response) {
           console.log('failed');
+          setOpenNotiFailed(true);
         }
       });
   };
@@ -711,6 +722,28 @@ function Products() {
         <Snackbar open={openFailed} autoHideDuration={6000} onClose={handleCloseFailed}>
           <MuiAlert
             onClose={handleCloseFailed}
+            severity="error"
+            sx={{
+              width: '100%'
+            }}
+          >
+            Something went wrong !
+          </MuiAlert>
+        </Snackbar>
+        <Snackbar open={openNotiSuccess} autoHideDuration={6000} onClose={handleCloseNotiSuccess}>
+          <MuiAlert
+            onClose={handleCloseNotiSuccess}
+            severity="success"
+            sx={{
+              width: '100%'
+            }}
+          >
+            Great, Notify new product for all user !
+          </MuiAlert>
+        </Snackbar>
+        <Snackbar open={openNotiFailed} autoHideDuration={6000} onClose={handleCloseNotiFailed}>
+          <MuiAlert
+            onClose={handleCloseNotiFailed}
             severity="error"
             sx={{
               width: '100%'
